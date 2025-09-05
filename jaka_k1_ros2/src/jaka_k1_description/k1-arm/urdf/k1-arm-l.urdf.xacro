@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="k1-arm">
+    <xacro:macro name="k1-arm-l" params="prefix parent ref_xyz:='0 0 0' ref_rpy:='0 0 0'">
+        <xacro:include filename="$(find jaka_k1_description)/k1-arm/urdf/link-l.urdf.xacro" />
+        <xacro:k1-arm-links-l prefix="${prefix}" />
+        <xacro:macro name="joint"
+            params="name:='' type:='revolute' xyz:='0 0 0' rpy:='0 0 0' parent:='' child:='' limit:='-6.2832 6.2832 0 0' axis='0 0 1' lower:='0' upper:='0'">
+            <joint
+                name="${name}"
+                type="${type}">
+                <origin xyz="${xyz}" rpy="${rpy}" />
+                <parent link="${parent}" />
+                <child link="${child}" />
+                <axis xyz="${axis}" />
+                <limit lower="${lower}" upper="${upper}" effort="0" velocity="0" />
+            </joint>
+        </xacro:macro>
+        <!-- DH_PARAM = {203, 0, 340.5, 0, 227, 0, 188, 0, 0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0,
+        0.0, 0.0, 0.0, -90, 90, -90, 90, -90, 90, 0.0} -->
+        <!-- JOINT_OFFSET = {180, 0, 0, 0, 180, 0, 0} -->
+        <!-- JOINT_DIR = {1, -1, 1, 1, 1, 1, 1} -->
+
+        <xacro:arg name="a0" default="0" />
+        <xacro:arg name="a1" default="0" />
+        <xacro:arg name="a2" default="0" />
+        <xacro:arg name="a3" default="0" />
+        <xacro:arg name="a4" default="0" />
+        <xacro:arg name="a5" default="0" />
+        <xacro:arg name="a6" default="0" />
+
+        <xacro:arg name="alpha0" default="-1.5708" />
+        <xacro:arg name="alpha1" default="1.5708" />
+        <xacro:arg name="alpha2" default="-1.5708" />
+        <xacro:arg name="alpha3" default="1.5708" />
+        <xacro:arg name="alpha4" default="-1.5708" />
+        <xacro:arg name="alpha5" default="1.5708" />
+        <xacro:arg name="alpha6" default="0" />
+
+        <xacro:arg name="d1" default="0.203" />
+        <xacro:arg name="d2" default="0" />
+        <xacro:arg name="d3" default="-0.3045" />
+        <xacro:arg name="d4" default="0" />
+        <xacro:arg name="d5" default="0.227" />
+        <xacro:arg name="d6" default="0" />
+        <xacro:arg name="d7" default="0.188" />
+
+        <xacro:arg name="zero1" default="0" />
+        <xacro:arg name="zero2" default="0" />
+        <xacro:arg name="zero3" default="0" />
+        <xacro:arg name="zero4" default="0" />
+        <xacro:arg name="zero5" default="0" />
+        <xacro:arg name="zero6" default="0" />
+        <xacro:arg name="zero7" default="0" />
+        <joint name="${prefix}install" type="fixed">
+            <origin xyz="${ref_xyz}" rpy="${ref_rpy}" />
+            <parent link="${parent}" />
+            <child link="${prefix}base_link" />
+        </joint>
+        <xacro:joint name="${prefix}j1"
+            parent="${prefix}base_link"
+            child="${prefix}link1"
+            xyz="0 0 0"
+            rpy="0 0 -1.5708"
+            lower="-6.2832" 
+            upper="6.2832"
+        />
+        <xacro:joint name="${prefix}j2" 
+            parent="${prefix}link1" 
+            child="${prefix}link2"
+            xyz="0 0 0.203" 
+            rpy="-1.5708 0 0" 
+            lower="-1.8325" 
+            upper="1.8325" 
+        />
+        <xacro:joint name="${prefix}j3" 
+            parent="${prefix}link2" 
+            child="${prefix}link3"
+            xyz="0 0 0" 
+            rpy="-1.5708 0 3.1416" 
+            lower="-6.2832" 
+            upper="6.2832" 
+        />
+        <xacro:joint name="${prefix}j4" 
+            parent="${prefix}link3" 
+            child="${prefix}link4" 
+            xyz="0.00040047 0 0.3405"
+            rpy="-1.5708 0 -3.1416" 
+            lower="-2.5307" 
+            upper="0.5235" 
+        />
+        <xacro:joint name="${prefix}j5" 
+            parent="${prefix}link4" 
+            child="${prefix}link5" 
+            xyz="0 0 0"
+            rpy="-1.5708 0 -3.1416" 
+            lower="-6.2832" 
+            upper="6.2832" 
+        />
+        <xacro:joint name="${prefix}j6" 
+            parent="${prefix}link5" 
+            child="${prefix}link6" 
+            xyz="0 0 0.22694"
+            rpy="-1.5708 0 -3.1416" 
+            lower="-1.8325" 
+            upper="1.8325" 
+        />
+        <xacro:joint name="${prefix}j7" 
+            parent="${prefix}link6" 
+            child="${prefix}link7" 
+            xyz="0 0 0"
+            rpy="1.5708 0 0" 
+            lower="-6.2832" 
+            upper="6.2832" 
+        />
+        <xacro:joint name="${prefix}t" 
+            parent="${prefix}link7" 
+            child="${prefix}tool" 
+            xyz="0 0 0.18827"
+            rpy="0 0 0" 
+            type="fixed"
+        />
+
+        <!-- <xacro:joint name="r-j5" parent="base_link"        child="r5"  xyz="3 0 0"         rpy="1.5708 0
+        -3.1416"  lower="-6.2832" upper="6.2832"  /> -->
+        <!-- <xacro:joint name="r-j6" parent="base_link"        child="r6"  xyz="3 0 $(arg d5)" rpy="-1.5708
+        0 0"       lower="-1.8325" upper="1.8325"  /> -->
+        <!-- <xacro:joint name="r-j7" parent="base_link"        child="r7"  xyz="3 0 0"         rpy="1.5708 0 0"
+        lower="-6.2832" upper="6.2832"  /> -->
+        <!-- <xacro:joint name="r-t"  parent="base_link"        child="rt"  xyz="3 0 0.188"     rpy="0 0 0"
+        lower="-6.2832" upper="6.2832"  type="fixed" axis="0 0 0"/> -->
+    </xacro:macro>
+</robot>

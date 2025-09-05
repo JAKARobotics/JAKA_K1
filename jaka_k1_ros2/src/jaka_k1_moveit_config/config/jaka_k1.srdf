@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="jaka_k1">
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <group name="jaka_k1_arm_l">
+        <joint name="rb1_install"/>
+        <joint name="rb1_j1"/>
+        <joint name="rb1_j2"/>
+        <joint name="rb1_j3"/>
+        <joint name="rb1_j4"/>
+        <joint name="rb1_j5"/>
+        <joint name="rb1_j6"/>
+        <joint name="rb1_j7"/>
+        <joint name="rb1_t"/>
+    </group>
+    <group name="jaka_k1_arm_r">
+        <joint name="rb2_install"/>
+        <joint name="rb2_j1"/>
+        <joint name="rb2_j2"/>
+        <joint name="rb2_j3"/>
+        <joint name="rb2_j4"/>
+        <joint name="rb2_j5"/>
+        <joint name="rb2_j6"/>
+        <joint name="rb2_j7"/>
+        <joint name="rb2_t"/>
+    </group>
+    <group name="jaka_k1_full_robot">
+        <group name="jaka_k1_arm_l"/>
+        <group name="jaka_k1_arm_r"/>
+    </group>
+
+    <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
+    <group_state name="zero" group="jaka_k1_arm_l">
+        <joint name="rb1_j1" value="0"/>
+        <joint name="rb1_j2" value="0"/>
+        <joint name="rb1_j3" value="0"/>
+        <joint name="rb1_j4" value="0"/>
+        <joint name="rb1_j5" value="0"/>
+        <joint name="rb1_j6" value="0"/>
+        <joint name="rb1_j7" value="0"/>
+    </group_state>
+    <group_state name="pose_1" group="jaka_k1_arm_l">
+        <joint name="rb1_j1" value="0"/>
+        <joint name="rb1_j2" value="0"/>
+        <joint name="rb1_j3" value="0"/>
+        <joint name="rb1_j4" value="-1.57"/>
+        <joint name="rb1_j5" value="0"/>
+        <joint name="rb1_j6" value="-1.57"/>
+        <joint name="rb1_j7" value="0"/>
+    </group_state>
+    <group_state name="zero" group="jaka_k1_arm_r">
+        <joint name="rb2_j1" value="0"/>
+        <joint name="rb2_j2" value="0"/>
+        <joint name="rb2_j3" value="0"/>
+        <joint name="rb2_j4" value="0"/>
+        <joint name="rb2_j5" value="0"/>
+        <joint name="rb2_j6" value="0"/>
+        <joint name="rb2_j7" value="0"/>
+    </group_state>
+    <group_state name="pose_1" group="jaka_k1_arm_r">
+        <joint name="rb2_j1" value="0"/>
+        <joint name="rb2_j2" value="0"/>
+        <joint name="rb2_j3" value="0"/>
+        <joint name="rb2_j4" value="-1.57"/>
+        <joint name="rb2_j5" value="0"/>
+        <joint name="rb2_j6" value="1.57"/>
+        <joint name="rb2_j7" value="0"/>
+    </group_state>
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="rb1_base_link" link2="rb1_link1" reason="Adjacent"/>
+    <disable_collisions link1="rb1_base_link" link2="rb1_link2" reason="Never"/>
+    <disable_collisions link1="rb1_base_link" link2="rb1_link3" reason="Never"/>
+    <disable_collisions link1="rb1_base_link" link2="rb1_link4" reason="Never"/>
+    <disable_collisions link1="rb1_base_link" link2="rb1_link5" reason="Never"/>
+    <disable_collisions link1="rb1_base_link" link2="rb2_base_link" reason="Adjacent"/>
+    <disable_collisions link1="rb1_base_link" link2="rb2_link1" reason="Never"/>
+    <disable_collisions link1="rb1_base_link" link2="rb2_link2" reason="Never"/>
+    <disable_collisions link1="rb1_base_link" link2="rb2_link3" reason="Never"/>
+    <disable_collisions link1="rb1_base_link" link2="rb2_link4" reason="Never"/>
+    <disable_collisions link1="rb1_base_link" link2="rb2_link5" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb1_link2" reason="Adjacent"/>
+    <disable_collisions link1="rb1_link1" link2="rb1_link3" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb1_link4" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb1_link5" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb2_base_link" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb2_link1" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb2_link2" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb2_link3" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb2_link4" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb2_link5" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb2_link6" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb2_link7" reason="Never"/>
+    <disable_collisions link1="rb1_link1" link2="rb2_tool" reason="Never"/>
+    <disable_collisions link1="rb1_link2" link2="rb1_link3" reason="Adjacent"/>
+    <disable_collisions link1="rb1_link2" link2="rb1_link4" reason="Never"/>
+    <disable_collisions link1="rb1_link2" link2="rb1_link5" reason="Never"/>
+    <disable_collisions link1="rb1_link2" link2="rb2_base_link" reason="Never"/>
+    <disable_collisions link1="rb1_link2" link2="rb2_link1" reason="Never"/>
+    <disable_collisions link1="rb1_link2" link2="rb2_link2" reason="Never"/>
+    <disable_collisions link1="rb1_link2" link2="rb2_link3" reason="Never"/>
+    <disable_collisions link1="rb1_link2" link2="rb2_link4" reason="Never"/>
+    <disable_collisions link1="rb1_link2" link2="rb2_link5" reason="Never"/>
+    <disable_collisions link1="rb1_link2" link2="rb2_link6" reason="Never"/>
+    <disable_collisions link1="rb1_link2" link2="rb2_link7" reason="Never"/>
+    <disable_collisions link1="rb1_link2" link2="rb2_tool" reason="Never"/>
+    <disable_collisions link1="rb1_link3" link2="rb1_link4" reason="Adjacent"/>
+    <disable_collisions link1="rb1_link3" link2="rb1_link5" reason="Never"/>
+    <disable_collisions link1="rb1_link3" link2="rb1_tool" reason="Never"/>
+    <disable_collisions link1="rb1_link3" link2="rb2_base_link" reason="Never"/>
+    <disable_collisions link1="rb1_link3" link2="rb2_link1" reason="Never"/>
+    <disable_collisions link1="rb1_link3" link2="rb2_link2" reason="Never"/>
+    <disable_collisions link1="rb1_link3" link2="rb2_link3" reason="Never"/>
+    <disable_collisions link1="rb1_link3" link2="rb2_link4" reason="Never"/>
+    <disable_collisions link1="rb1_link3" link2="rb2_link5" reason="Never"/>
+    <disable_collisions link1="rb1_link4" link2="rb1_link5" reason="Adjacent"/>
+    <disable_collisions link1="rb1_link4" link2="rb1_link6" reason="Never"/>
+    <disable_collisions link1="rb1_link4" link2="rb1_link7" reason="Never"/>
+    <disable_collisions link1="rb1_link4" link2="rb1_tool" reason="Never"/>
+    <disable_collisions link1="rb1_link4" link2="rb2_base_link" reason="Never"/>
+    <disable_collisions link1="rb1_link4" link2="rb2_link1" reason="Never"/>
+    <disable_collisions link1="rb1_link4" link2="rb2_link2" reason="Never"/>
+    <disable_collisions link1="rb1_link4" link2="rb2_link3" reason="Never"/>
+    <disable_collisions link1="rb1_link4" link2="rb2_link4" reason="Never"/>
+    <disable_collisions link1="rb1_link4" link2="rb2_tool" reason="Never"/>
+    <disable_collisions link1="rb1_link5" link2="rb1_link6" reason="Adjacent"/>
+    <disable_collisions link1="rb1_link5" link2="rb1_link7" reason="Never"/>
+    <disable_collisions link1="rb1_link5" link2="rb1_tool" reason="Never"/>
+    <disable_collisions link1="rb1_link5" link2="rb2_base_link" reason="Never"/>
+    <disable_collisions link1="rb1_link5" link2="rb2_link1" reason="Never"/>
+    <disable_collisions link1="rb1_link5" link2="rb2_link2" reason="Never"/>
+    <disable_collisions link1="rb1_link5" link2="rb2_link3" reason="Never"/>
+    <disable_collisions link1="rb1_link5" link2="rb2_link4" reason="Never"/>
+    <disable_collisions link1="rb1_link6" link2="rb1_link7" reason="Adjacent"/>
+    <disable_collisions link1="rb1_link6" link2="rb1_tool" reason="Never"/>
+    <disable_collisions link1="rb1_link6" link2="rb2_link1" reason="Never"/>
+    <disable_collisions link1="rb1_link6" link2="rb2_link2" reason="Never"/>
+    <disable_collisions link1="rb1_link6" link2="rb2_link4" reason="Never"/>
+    <disable_collisions link1="rb1_link7" link2="rb1_tool" reason="Adjacent"/>
+    <disable_collisions link1="rb1_link7" link2="rb2_link2" reason="Never"/>
+    <disable_collisions link1="rb1_tool" link2="rb2_link2" reason="Never"/>
+    <disable_collisions link1="rb1_tool" link2="rb2_link5" reason="Never"/>
+    <disable_collisions link1="rb1_tool" link2="rb2_tool" reason="Never"/>
+    <disable_collisions link1="rb2_base_link" link2="rb2_link1" reason="Adjacent"/>
+    <disable_collisions link1="rb2_base_link" link2="rb2_link2" reason="Never"/>
+    <disable_collisions link1="rb2_base_link" link2="rb2_link3" reason="Never"/>
+    <disable_collisions link1="rb2_base_link" link2="rb2_link4" reason="Never"/>
+    <disable_collisions link1="rb2_base_link" link2="rb2_link5" reason="Never"/>
+    <disable_collisions link1="rb2_link1" link2="rb2_link2" reason="Adjacent"/>
+    <disable_collisions link1="rb2_link1" link2="rb2_link3" reason="Never"/>
+    <disable_collisions link1="rb2_link1" link2="rb2_link4" reason="Never"/>
+    <disable_collisions link1="rb2_link1" link2="rb2_link5" reason="Never"/>
+    <disable_collisions link1="rb2_link2" link2="rb2_link3" reason="Adjacent"/>
+    <disable_collisions link1="rb2_link2" link2="rb2_link4" reason="Never"/>
+    <disable_collisions link1="rb2_link2" link2="rb2_link5" reason="Never"/>
+    <disable_collisions link1="rb2_link3" link2="rb2_link4" reason="Adjacent"/>
+    <disable_collisions link1="rb2_link3" link2="rb2_link5" reason="Never"/>
+    <disable_collisions link1="rb2_link3" link2="rb2_tool" reason="Never"/>
+    <disable_collisions link1="rb2_link4" link2="rb2_link5" reason="Adjacent"/>
+    <disable_collisions link1="rb2_link4" link2="rb2_link6" reason="Never"/>
+    <disable_collisions link1="rb2_link4" link2="rb2_link7" reason="Never"/>
+    <disable_collisions link1="rb2_link4" link2="rb2_tool" reason="Never"/>
+    <disable_collisions link1="rb2_link5" link2="rb2_link6" reason="Adjacent"/>
+    <disable_collisions link1="rb2_link5" link2="rb2_link7" reason="Never"/>
+    <disable_collisions link1="rb2_link5" link2="rb2_tool" reason="Never"/>
+    <disable_collisions link1="rb2_link6" link2="rb2_link7" reason="Adjacent"/>
+    <disable_collisions link1="rb2_link6" link2="rb2_tool" reason="Never"/>
+    <disable_collisions link1="rb2_link7" link2="rb2_tool" reason="Adjacent"/>
+</robot>

@@ -1,0 +1,69 @@
+# This config file is used by ros2_control
+controller_manager:
+  ros__parameters:
+    update_rate: 1000  # Hz
+
+    jaka_k1_arm_l_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    jaka_k1_arm_r_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    jaka_k1_full_robot_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+jaka_k1_arm_l_controller:
+  ros__parameters:
+    joints:
+      - rb1_j1
+      - rb1_j2
+      - rb1_j3
+      - rb1_j4
+      - rb1_j5
+      - rb1_j6
+      - rb1_j7
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+jaka_k1_arm_r_controller:
+  ros__parameters:
+    joints:
+      - rb2_j1
+      - rb2_j2
+      - rb2_j3
+      - rb2_j4
+      - rb2_j5
+      - rb2_j6
+      - rb2_j7
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+jaka_k1_full_robot_controller:
+  ros__parameters:
+    joints:
+      - rb1_j1
+      - rb1_j2
+      - rb1_j3
+      - rb1_j4
+      - rb1_j5
+      - rb1_j6
+      - rb1_j7
+      - rb2_j1
+      - rb2_j2
+      - rb2_j3
+      - rb2_j4
+      - rb2_j5
+      - rb2_j6
+      - rb2_j7
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
