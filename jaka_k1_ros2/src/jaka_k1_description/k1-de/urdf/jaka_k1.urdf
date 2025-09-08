@@ -503,7 +503,7 @@
     <child link="rb2_base_link"/>
   </joint>
   <joint name="rb2_j1" type="revolute">
-    <origin rpy="0 0 1.5708" xyz="0 0 0"/>
+    <origin rpy="0 0 -1.5708" xyz="0 0 0"/>
     <parent link="rb2_base_link"/>
     <child link="rb2_link1"/>
     <axis xyz="0 0 1"/>
@@ -517,10 +517,10 @@
     <limit effort="0" lower="-1.8325" upper="1.8325" velocity="0"/>
   </joint>
   <joint name="rb2_j3" type="revolute">
-    <origin rpy="1.5708 0 3.1416" xyz="0 0 0"/>
+    <origin rpy="-1.5708 0 0" xyz="0 0 0"/>
     <parent link="rb2_link2"/>
     <child link="rb2_link3"/>
-    <axis xyz="0 0 1"/>
+    <axis xyz="0 0 -1"/>
     <limit effort="0" lower="-6.2832" upper="6.2832" velocity="0"/>
   </joint>
   <joint name="rb2_j4" type="revolute">
