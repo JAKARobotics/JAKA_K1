@@ -73,8 +73,8 @@ set(LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 link_directories(${LIBRARY_DIR})
 
 # Find the library and link it properly
-target_link_libraries(jaka_k1_driver ${LIBRARY_DIR}/libjakaAPI_2_3_0_12.so)
-# target_link_libraries(edg_servo_j_test_client ${LIBRARY_DIR}/libjakaAPI_2_3_0_12.so)
+target_link_libraries(jaka_k1_driver ${LIBRARY_DIR}/libjakaAPI_2_3_3.so)
+# target_link_libraries(edg_servo_j_test_client ${LIBRARY_DIR}/libjakaAPI_2_3_3.so)
 
 # Install executables
 install(TARGETS

@@ -132,9 +132,10 @@ public:
 	 * @param robot_index 机器人索引号，0表示左臂，1表示右臂
 	 * @param joint_pos 关节位置，单位rad
 	 * @param cartesian_pose 笛卡尔位置，单位mm和rad
+	 * @param sensor_torque 传感器扭矩，单位Nm
 	 * @return ERR_SUCC 成功 其他失败
 	 */
-	errno_t edg_get_stat(unsigned char robot_index, JointValue *joint_pos, CartesianPose *cartesian_pose);
+	errno_t edg_get_stat(unsigned char robot_index, JointValue *joint_pos, CartesianPose *cartesian_pose, CartesianPose *sensor_torque=nullptr);
 
 	/**
 	 * @brief 获取机器人状态详细信息，注意此接口获取的为缓存数据，刷新周期约为8ms
@@ -452,8 +453,9 @@ public:
 	/// @param joint_pos 两个机器人的位置指令
 	/// @param vel 两个机器人速度指令
 	/// @param acc 两个机器人的加速度指令
+	/// @param tol 两个机器人的轨迹转接时允许误差，范围>=0
 	/// @return 
-    errno_t robot_run_multi_movj(int robot_id, const MoveMode *move_mode, BOOL is_block, const JointValue *joint_pos, const double* vel, const double* acc);
+    errno_t robot_run_multi_movj(int robot_id, const MoveMode *move_mode, BOOL is_block, const JointValue *joint_pos, const double* vel, const double* acc, const double* tol = nullptr);
 
 	/// @brief 多机器人同步运动指令
 	/// @param robot_id 机器人ID 接受LEFT(0) RIGHT(1) DUAL(-1) 
@@ -462,8 +464,9 @@ public:
 	/// @param end_pos 两个机器人的位置指令
 	/// @param vel 两个机器人速度指令
 	/// @param acc 两个机器人的加速度指令
+	/// @param tol 两个机器人的轨迹转接时允许误差，范围>=0
 	/// @return 
-    errno_t robot_run_multi_movl(int robot_id, const MoveMode *move_mode, BOOL is_block, const CartesianPose* end_pos, const double* vel, const double* acc);
+    errno_t robot_run_multi_movl(int robot_id, const MoveMode *move_mode, BOOL is_block, const CartesianPose* end_pos, const double* vel, const double* acc, const double* tol = nullptr);
 
 
     /// @brief 获取两个机器人的DH参数
@@ -602,7 +605,23 @@ public:
 
     errno_t robot_get_tool_offset(int robot_id, CartesianPose* offset);
 
+	/**
+	 * @brief 获取机器人安装位置
+	 * @param robot_id 机器人ID 接受LEFT(0) RIGHT(1)
+	 * @param base_offset 机器人基座标相对于世界坐标的变换，姿态按照ZYX欧拉角描述,单位mm和rad
+	 * @return ERR_SUCC 成功 其他失败
+	 */
     errno_t robot_get_default_base(int robot_id, CartesianPose* base_offset);
+
+	/**
+	 * @brief 设置机器人安装位置,
+	 * @param install_offset 机器人基座标相对于世界坐标的变换，姿态按照ZYX欧拉角描述，单位mm和rad
+	 * @param robot_id 机器人ID 接受LEFT(0) RIGHT(1)
+	 * @return ERR_SUCC 成功 其他失败
+	 * @note 该接口设置的安装角度会影响到机器人末端工具坐标系的计算
+	 * @note 该接口需要在机器人上电后调用，且在机器人使能前调用
+	 */
+	errno_t robot_set_default_base(CartesianPose install_offset, int robot_id = 0);
 
 	~JAKAZuRobot();
 

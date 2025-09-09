@@ -452,10 +452,6 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
         RCLCPP_DEBUG(node->get_logger(), "%s", ss.str().c_str());
       }
 
-      //  Just for test
-      JointValue jpos_cmd;
-      memset(&jpos_cmd,0,sizeof(jpos_cmd));
-
       // ensure we always call edg_servo_j(0, ...) then edg_servo_j(1, ...)
       int retArm; int retOther;
       if (arm == 1) {
