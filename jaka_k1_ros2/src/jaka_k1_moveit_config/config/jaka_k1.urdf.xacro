@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="jaka_k1">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+    <xacro:arg name="use_gazebo" default="false"/>
+    <xacro:arg name="use_rviz_sim" default="false"/>
+    <xacro:arg name="use_isaac_sim" default="false"/>
+
+    <!-- Import jaka_k1 urdf file -->
+    <xacro:include filename="$(find jaka_k1_description)/k1-de/urdf/jaka_k1.urdf" />
+
+    <!-- Import control_xacro -->
+    <xacro:include filename="jaka_k1.ros2_control.xacro" />
+
+
+    <xacro:jaka_k1_ros2_control name="jaka_k1_hardware" initial_positions_file="$(arg initial_positions_file)" use_gazebo="$(arg use_gazebo)" use_rviz_sim="$(arg use_rviz_sim)" use_isaac_sim="$(arg use_isaac_sim)" />
+
+</robot>

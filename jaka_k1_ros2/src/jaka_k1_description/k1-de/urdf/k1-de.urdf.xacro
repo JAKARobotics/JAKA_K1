@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="k1-de">
+  <xacro:include filename="$(find jaka_k1_description)/k1-arm/urdf/k1-arm-l.urdf.xacro"/>
+  <xacro:include filename="$(find jaka_k1_description)/k1-arm/urdf/k1-arm-r.urdf.xacro"/>
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.1" rpy="0 0 0" />
+      <geometry>
+        <box size="0.1 0.1 0.2"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+  </link>
+  <xacro:k1-arm-l prefix="rb1_" parent="base_link" ref_xyz="0 0.016 0.22" ref_rpy="1.5708 -1.5708 3.14159"/>
+  <xacro:k1-arm-r prefix="rb2_" parent="base_link" ref_xyz="0 -0.016 0.22" ref_rpy="1.5708 1.5708 0"/>
+</robot>  

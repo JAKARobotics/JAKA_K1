@@ -1,0 +1,17 @@
+# Default initial positions for jaka_k1's ros2_control fake system
+
+initial_positions:
+  rb1_j1: 0
+  rb1_j2: 0
+  rb1_j3: 0
+  rb1_j4: 0
+  rb1_j5: 0
+  rb1_j6: 0
+  rb1_j7: 0
+  rb2_j1: 0
+  rb2_j2: 0
+  rb2_j3: 0
+  rb2_j4: 0
+  rb2_j5: 0
+  rb2_j6: 0
+  rb2_j7: 0

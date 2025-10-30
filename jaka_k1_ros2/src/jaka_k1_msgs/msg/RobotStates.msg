@@ -1,0 +1,10 @@
+bool power_state
+bool servo_state
+bool estoped
+bool collision_state
+bool  inpos_left
+bool  inpos_right
+bool  drag_left
+bool  drag_right
+bool  inerror_left
+bool  inerror_right
