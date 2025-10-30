@@ -1,0 +1,365 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="k1-arm">
+  <xacro:macro name="k1-arm-links-r" params="prefix">
+    <link
+      name="${prefix}base_link">
+      <inertial>
+        <origin
+          xyz="3.31565095654518E-05 -6.06658362434231E-10 0.0527775535616377"
+          rpy="0 0 0" />
+        <mass
+          value="2.64748232797832" />
+        <inertia
+          ixx="0.00473767215322111"
+          ixy="-6.01260149388541E-12"
+          ixz="4.01841188870722E-06"
+          iyy="0.00458794707334943"
+          iyz="2.9687960037144E-11"
+          izz="0.00369251689531694" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://jaka_k1_description/k1-arm/meshes/base_link.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://jaka_k1_description/k1-arm/meshes/base_link.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <link
+      name="${prefix}link1">
+      <inertial>
+        <origin
+          xyz="2.35625309155663E-06 1.35718496940829E-06 0.163004779462571"
+          rpy="0 0 0" />
+        <mass
+          value="1.39323858725092" />
+        <inertia
+          ixx="0.00277101603679751"
+          ixy="2.24081564361421E-07"
+          ixz="-4.69181628062515E-08"
+          iyy="0.00349546627377609"
+          iyz="8.48514480750015E-08"
+          izz="0.00199034701623053" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://jaka_k1_description/k1-arm/meshes/r1.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://jaka_k1_description/k1-arm/meshes/r1.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <link
+      name="${prefix}link2">
+      <inertial>
+        <origin
+          xyz="-1.71093757588003E-05 -0.0452985721312214 0.000762955289202616"
+          rpy="0 0 0" />
+        <mass
+          value="2.70256307184887" />
+        <inertia
+          ixx="0.00984922872707295"
+          ixy="-3.34424080739915E-06"
+          ixz="1.12868359949668E-09"
+          iyy="0.00588632047318319"
+          iyz="-9.3543917494047E-05"
+          izz="0.00747853193882291" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://jaka_k1_description/k1-arm/meshes/r2.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://jaka_k1_description/k1-arm/meshes/r2.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <link
+      name="${prefix}link3">
+      <inertial>
+        <origin
+          xyz="0.00652991308253514 -0.000442905212810041 -0.240316417923352"
+          rpy="0 0 0" />
+        <mass
+          value="3.78717603752458" />
+        <inertia
+          ixx="0.021152417271302"
+          ixy="-1.15346166484228E-06"
+          ixz="0.000297886191537816"
+          iyy="0.0213336690144706"
+          iyz="1.75017113835126E-05"
+          izz="0.00408459556648683" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://jaka_k1_description/k1-arm/meshes/r3.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://jaka_k1_description/k1-arm/meshes/r3.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <link
+      name="${prefix}link4">
+      <inertial>
+        <origin
+          xyz="0.00464514960444359 0.0316039318322144 -0.000428082645444083"
+          rpy="0 0 0" />
+        <mass
+          value="1.47374297939438" />
+        <inertia
+          ixx="0.00379329593223484"
+          ixy="-0.000160244508046095"
+          ixz="-2.05545994070888E-07"
+          iyy="0.00225584817402452"
+          iyz="8.0341089919647E-06"
+          izz="0.00281134619295324" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://jaka_k1_description/k1-arm/meshes/r4.STL" />
+        </geometry>
+        <material
+          name="">
+          <color
+            rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+        </material>
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <mesh
+            filename="package://jaka_k1_description/k1-arm/meshes/r4.STL" />
+        </geometry>
+      </collision>
+    </link>
+    <link
+    name="${prefix}link5">
+    <inertial>
+      <origin
+        xyz="2.4267981551529E-06 -0.00431111479965585 0.179548593384493"
+        rpy="0 0 0" />
+      <mass
+        value="2.15871033311329" />
+      <inertia
+        ixx="0.00478555580296053"
+        ixy="1.56222935791537E-07"
+        ixz="-1.49192463873201E-07"
+        iyy="0.00487381295205347"
+        iyz="0.000346879850784245"
+        izz="0.001851193548143" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_k1_description/k1-arm/meshes/r5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_k1_description/k1-arm/meshes/r5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="${prefix}link6">
+    <inertial>
+      <origin
+        xyz="-2.27348336573341E-07 -0.0786926809396099 0.0063285262352254"
+        rpy="0 0 0" />
+      <mass
+        value="1.5444871189577" />
+      <inertia
+        ixx="0.00348283709608049"
+        ixy="2.23461240922036E-08"
+        ixz="6.57882835617852E-09"
+        iyy="0.00139138348799037"
+        iyz="-0.000688825990372178"
+        izz="0.003301681445464" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_k1_description/k1-arm/meshes/r6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.898039215686275 0.917647058823529 0.929411764705882 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_k1_description/k1-arm/meshes/r6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="${prefix}link7">
+    <inertial>
+      <origin
+        xyz="1.53433398486502E-07 -3.38533751887971E-05 0.161465913171448"
+        rpy="0 0 0" />
+      <mass
+        value="0.641939994235649" />
+      <inertia
+        ixx="0.000376255873847819"
+        ixy="-3.12488196269271E-13"
+        ixz="-1.01726480817797E-10"
+        iyy="0.000376762309871897"
+        iyz="4.34955394700917E-07"
+        izz="0.00051784999232742" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_k1_description/k1-arm/meshes/r7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_k1_description/k1-arm/meshes/r7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="${prefix}tool">
+    <inertial>
+      <origin
+        xyz="7.18437198621302E-10 -1.92504762130952E-10 -0.00099999999999989"
+        rpy="0 0 0" />
+      <mass
+        value="0.00155862265526229" />
+      <inertia
+        ixx="9.71784989903875E-08"
+        ixy="-1.32853506615153E-20"
+        ixz="-6.90701328598647E-14"
+        iyy="9.71784989903415E-08"
+        iyz="1.85072947766703E-14"
+        izz="1.93317916210448E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_k1_description/k1-arm/meshes/rt.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://jaka_k1_description/k1-arm/meshes/rt.STL" />
+      </geometry>
+    </collision>
+  </link>
+  </xacro:macro>
+</robot>
