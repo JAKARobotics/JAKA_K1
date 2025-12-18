@@ -1183,7 +1183,7 @@ int example_speed_foresight()
   - robot_index 机器人索引号，接收LEFT(0) RIGHT(1)
   - joint_pos  关节位置，单位rad
   - cartesian_pos 笛卡尔位置，单位mm和rad
-  - sensor_torque 传感器扭矩，单位Nm
+  - sensor_torque 传感器扭矩，单位Nm, 暂不支持
   -  joint_torque 关节扭矩，单位Nm
 - 返回值 ERR_SUCC 成功 其他失败
 
