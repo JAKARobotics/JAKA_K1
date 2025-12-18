@@ -1,4 +1,5 @@
 # CHANGELOG
+[最新文档](API.md)
 
 ## 20251218 - SamuelXing
 * 添加``shut_down``接口对于使能、电源控制逻辑的说明
