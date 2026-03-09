@@ -27,7 +27,6 @@ find_package(rosidl_default_generators REQUIRED)
 
 # Declare executable targets
 add_executable(jaka_k1_driver src/jaka_k1_driver.cpp)
-# add_executable(edg_servo_j_test_client src/edg_servo_j_test_client.cpp)
 
 # Link libraries
 ament_target_dependencies(jaka_k1_driver
@@ -40,14 +39,6 @@ ament_target_dependencies(jaka_k1_driver
   action_msgs
   control_msgs
 )
-# ament_target_dependencies(edg_servo_j_test_client
-#   rclcpp
-#   std_msgs
-#   geometry_msgs
-#   sensor_msgs
-#   jaka_k1_msgs
-#   action_msgs
-# )
 
 # For including directories in ROS 2
 target_include_directories(jaka_k1_driver
@@ -57,15 +48,6 @@ target_include_directories(jaka_k1_driver
     ${ament_INCLUDE_DIRS}
 )
 
-# target_include_directories(edg_servo_j_test_client
-#   PUBLIC
-#     include
-#   PRIVATE
-#     ${ament_INCLUDE_DIRS}
-# )
-
-
-
 # Specify where to find external libraries
 set(LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 
@@ -73,13 +55,11 @@ set(LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 link_directories(${LIBRARY_DIR})
 
 # Find the library and link it properly
-target_link_libraries(jaka_k1_driver ${LIBRARY_DIR}/libjakaAPI_2_3_3.so)
-# target_link_libraries(edg_servo_j_test_client ${LIBRARY_DIR}/libjakaAPI_2_3_3.so)
+target_link_libraries(jaka_k1_driver ${LIBRARY_DIR}/libjakaAPI_2_3_0_DUAL_7.so)
 
 # Install executables
 install(TARGETS
   jaka_k1_driver
-  # edg_servo_j_test_client
   DESTINATION lib/${PROJECT_NAME}
 )
 

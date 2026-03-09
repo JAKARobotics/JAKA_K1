@@ -1,402 +1,755 @@
-	/**
-	* @last update Nov 30 2021 
-	* @Maintenance star@jaka
-	*/
+/**
+ * @last update Nov 30 2021
+ * @Maintenance star@jaka
+ */
 #ifndef _JHTYPES_H_
 #define _JHTYPES_H_
 
 #define TRUE 1
 #define FALSE 0
+
 #include <stdio.h>
 #include <stdint.h>
+
 
 #define JAKA_ROBOT_MAX_JOINT 7
 #define LEFT 0
 #define RIGHT 1
 #define DUAL -1
 
-typedef int BOOL;	 //布尔类型
-typedef int JKHD;	 //机械臂控制句柄类型
-typedef int errno_t; //接口返回值类型
+
+typedef int BOOL;    // SDK bool type
+typedef int JKHD;    // SDK handler for C
+typedef int errno_t; // SDK error code feedback
+
+#define MAX_PAYLOAD_CNT 16
+#define MAX_FTSENSOR_CNT 20
+
+#define MAX_PAYLOAD_CNT 16
+#define MAX_FTSENSOR_CNT 20
+#define MAX_EXT_CNT 10
+#define MAX_AXIS 9
 
 /**
-* @brief 笛卡尔空间位置数据类型
-*/
-typedef struct
-{
-	double x; ///< x轴坐标，单位mm
-	double y; ///< y轴坐标，单位mm
-	double z; ///< z轴坐标，单位mm
+ * @brief cartesian position without orientation
+ */
+typedef struct {
+    double x; ///< x axis，unit: mm
+    double y; ///< y axis，unit: mm
+    double z; ///< z axis，unit: mm
 } CartesianTran;
 
 /**
-* @brief 欧拉角姿态数据类型
-*/
-typedef struct
-{
-	double rx; ///< 绕固定轴X旋转角度，单位：rad
-	double ry; ///< 绕固定轴Y旋转角度，单位：rad
-	double rz; ///< 绕固定轴Z旋转角度，单位：rad
+ * @brief cartesian orientation
+ */
+typedef struct {
+    double rx; ///< x axis，unit：rad
+    double ry; ///< y axis，unit：rad
+    double rz; ///< z axis，unit：rad
 } Rpy;
 
 /**
-* @brief 四元数姿态数据类型
-*/
-typedef struct
-{
-	double s;
-	double x;
-	double y;
-	double z;
+ * @brief quaternion for orientation
+ */
+typedef struct {
+    double s;
+    double x;
+    double y;
+    double z;
 } Quaternion;
 
 /**
- *@brief 笛卡尔空间位姿类型
+ *@brief cartesian position with orientation
  */
-typedef struct
-{
-	CartesianTran tran; ///< 笛卡尔空间位置
-	Rpy rpy;			///< 笛卡尔空间姿态
+typedef struct {
+    CartesianTran tran; ///< cartesian translation
+    Rpy rpy;            ///< cartesian rotation
+
 } CartesianPose;
 
+typedef struct {
+    CartesianPose pose;
+    char name[100];
+    int id;
+} ToolInfo;
+
+typedef struct {
+    CartesianPose pose;
+    char name[100];
+    int id;
+} UserFrameInfo;
+
 /**
-* @brief 旋转矩阵数据类型
-*/
-typedef struct
-{
-	CartesianTran x; ///< x轴列分量
-	CartesianTran y; ///< y轴列分量
-	CartesianTran z; ///< z轴列分量
+ * @brief rotation marix
+ */
+typedef struct {
+    CartesianTran x; ///< x component
+    CartesianTran y; ///< y component
+    CartesianTran z; ///< z component
 } RotMatrix;
 
 /**
-* @brief 程序运行状态枚举类型
-*/
-typedef enum
-{
-	PROGRAM_IDLE,	 ///< 机器人停止运行
-	PROGRAM_RUNNING, ///< 机器人正在运行
-	PROGRAM_PAUSED	 ///< 机器人暂停
+ * @brief program executing state enum
+ */
+typedef enum {
+    PROGRAM_IDLE,    ///< idle
+    PROGRAM_RUNNING, ///< running
+    PROGRAM_PAUSED   ///< paused, able to resume
 } ProgramState;
 
 /**
-* @brief 坐标系选择枚举类型
-*/
-typedef enum
-{
-	COORD_BASE,	 ///< 基坐标系
-	COORD_JOINT, ///< 关节空间
-	COORD_TOOL	 ///< 工具坐标系
+ * @brief program info
+ */
+typedef struct {
+    int logic_line;             ///< program script executing line
+    int motion_line;            ///< executing motion CMD id
+    char file[100];             ///< current program file
+    ProgramState program_state; ///< program executing state
+} ProgramInfo;
+
+/**
+ *@brief Controller User Variable Struct
+ *@param id controller inner usage
+ *@param value value type always double
+ *@param alias variable alias which is less than 100 bytes
+ */
+typedef struct {
+    int id;
+    double value;
+    char alias[100];
+} UserVariable;
+
+/**
+ * @brief number of UserVariable is fixed to 100
+ */
+typedef struct {
+    UserVariable v[100];
+} UserVariableList;
+
+/**
+ * @brief operations when lost communication
+ */
+typedef enum {
+    MOT_KEEP,  ///< no change
+    MOT_PAUSE, ///< pause
+    MOT_ABORT  ///< abort
+} ProcessType;
+
+//
+typedef struct {
+    int major;
+    int minor;
+    int patch;
+    int suffix;
+    char version[50];
+    char scb[50];
+    char servo[50];
+} ControllerVersion;
+
+typedef struct{
+    int major;
+    int minor;
+    int patch;
+    int suffix;
+    char msg[50];
+} SDKVersion;
+
+/**
+ * @brief coordinate type
+ */
+typedef enum {
+    COORD_BASE,  ///< robot base coordinate
+    COORD_JOINT, ///< robot joint coordinate
+    COORD_TOOL   ///< robot tool coordinate
 } CoordType;
 
 /**
-* @brief jog运动模式枚举 
-*/
-typedef enum
-{
-	ABS = 0, ///< 绝对运动
-	INCR,	 ///< 增量运动
-	CONTINUE ///< 连续运动
+ * @brief move mode
+ */
+typedef enum {
+    ABS = 0,
+	INCR,
+	CONTINUE,
+    STOP
 } MoveMode;
 
-/**
-* @brief 系统监测数据类型
-*/
-typedef struct
-{
-	int scbMajorVersion;		///<scb主版本号
-	int scbMinorVersion;		///<scb次版本号
-	int cabTemperature;			///<控制柜温度
-	double robotAveragePower;	///<控制柜总线平均功率
-	double robotAverageCurrent; ///<控制柜总线平均电流
-	double instCurrent[JAKA_ROBOT_MAX_JOINT];		///<机器人7个轴的瞬时电流
-	double instVoltage[JAKA_ROBOT_MAX_JOINT];		///<机器人7个轴的瞬时电压
-	double instTemperature[JAKA_ROBOT_MAX_JOINT];	///<机器人7个轴的瞬时温度
-} SystemMonitorData;
+typedef enum { 
+    GlobalPlanner_disable = -1,
+    GlobalPlanner_T = 0, 
+    GlobalPlanner_S = 1 
+} MotionPlannerType;
+
+typedef enum { TIO_VOUT_24V = 0, TIO_VOUT_12V = 1 } TIO_VOUT;
+
+typedef struct {
+    BOOL enable;
+    TIO_VOUT v;
+} TIOInfo;
+
+typedef struct {
+    int pin_type;
+    int pin_mode;
+} TIO_pin;
 
 /**
-* @brief 负载数据类型
-*/
-typedef struct
-{
-	double mass;			///<负载质量，单位：kg
-	CartesianTran centroid; ///<负载质心, 单位：mm
+ * @brief payload
+ */
+typedef struct {
+    
+    double mass;            ///< mass, unit：kg
+    CartesianTran centroid; ///< centroid, unit：mm
+    int payload_id;         ///< payload identifier
 } PayLoad;
 
 /**
-* @brief 关节位置数据类型
-*/
-typedef struct
-{
-	double jVal[JAKA_ROBOT_MAX_JOINT]; ///< 7关节位置值，单位：rad
+ * @brief joint position
+ */
+typedef struct {
+    double jVal[JAKA_ROBOT_MAX_JOINT]; ///< each joint，unit：rad
 } JointValue;
 
+typedef enum{
+    JogStop = 0,
+    JogCONT = 1,
+    JogINCR = 2,
+    JogABS = 3,
+} JogMode;
+
+typedef struct {
+    int aj_num;
+    JogMode jog_mode;
+    CoordType coord_type;
+    double vel_cmd;
+    double pos_cmd;
+} JogParam;
+
 /**
-* @brief IO类型枚举
-*/
-typedef enum
-{
-	IO_CABINET, ///< 控制柜面板IO
-	IO_TOOL,	///< 工具IO
-	IO_EXTEND,	///< 扩展IO
-	IO_REALY,   ///< 继电器IO，目前仅CAB V3支持DO
-	IO_MODBUS_SLAVE, ///< Modbus从站IO,从0索引
-	IO_PROFINET_SLAVE, ///< Profinet从站IO,从0索引
-	IO_EIP_SLAVE      ///< ETHRENET/IP从站IO,从0索引
+ *@brief joint move param
+ */
+typedef struct {
+    int id;            ///< motion cmd id, range limit: [0, 5000], set to -1 if you want controller to set automatically
+    BOOL is_block;     ///< block until this cmd is done
+    JointValue joints; ///< targe joint value
+    MoveMode mode;     ///< motion mode
+    double vel;        ///< velocity
+    double acc;        ///< acceleration, set to 90 if you have no idea
+    double tol;        ///< tolerance, used for blending. set to 0 if you want to reach a fine point
+} MoveJParam;
+
+typedef struct {
+    int id;                ///< motion cmd id, range limit: [0, 5000], set to -1 if you want controller to set automatically
+    BOOL is_block;         ///< block until this cmd is done
+    CartesianPose end_pos; ///< taget position
+    MoveMode move_mode;    ///< motion mode
+    double vel;            ///< velocity
+    double acc;            ///< acceleration, set to 500 if you have no idea
+    double tol;            ///< tolerance, used for blending. set to 0 if you want to reach a fine point
+    double ori_vel;        ///< set to 3.14 if you have no idea
+    double ori_acc;        ///< set to 12.56 if you have no idea
+} MoveLParam;
+
+typedef struct {
+    int id;                ///< motion cmd id, range limit: [0, 5000], set to -1 if you want controller to set automatically
+    BOOL is_block;         ///< block until this cmd is done
+    CartesianPose mid_pos; ///< mid position
+    CartesianPose end_pos; ///< end position
+    MoveMode move_mode;    ///< motion mode
+    double vel;            ///< velocity
+    double acc;            ///< acceleration, set to 500 if you have no idea
+    double tol;            ///< tolerance, used for blending. set to 0 if you want to reach a fine point
+
+    double circle_cnt; ///< circule count
+    int circle_mode;   ///< clock wise or counter clock wise
+} MoveCParam;
+
+/**
+ * @brief IO type
+ */
+typedef enum {
+    IO_CABINET,        ///< cabinet IO
+    IO_TOOL,           ///< tool IO
+    IO_EXTEND,         ///< extended IO
+    IO_REALY,          ///< relay IO，only cab v3 supports relay DO
+    IO_MODBUS_SLAVE,   ///< Modbus slave station IO, index start from 0.
+    IO_PROFINET_SLAVE, ///< Profinet slave station IO, index start from 0.
+    IO_EIP_SLAVE       ///< ETHRENET/IP slave station IO, index start from 0.
 } IOType;
 
 /**
-* @brief 机器人状态数据
+ * @brief DO info
+ */
+typedef struct {
+    IOType io_type;    ///< IO type
+    int index;
+    BOOL value;
+} DOInfo;
+
+typedef struct {
+    IOType io_type;    ///< IO type
+    int index;
+    BOOL value;
+    int submod;
+} DI_Info;
+
+/**
+* @brief EXtio Data
 */
 typedef struct
 {
-	BOOL estoped;	   ///< 是否急停
-	BOOL poweredOn;	   ///< 是否打开电源
-	BOOL servoEnabled; ///< 是否使能
-} RobotState;
-
-/**
-* @brief 机器人回调函数指针
-*/
-typedef void (*CallBackFuncType)(int);
-
-/**
-* @brief 机器人力矩前馈数据
-*/
-
-/**
-* @brief 机器人关节监测数据
-*/
-typedef struct
-{
-	double instCurrent;		///< 瞬时电流
-	double instVoltage;		///< 瞬时电压
-	double instTemperature; ///< 瞬时温度
-	double instVel;			///< 瞬时速度 控制器1.7.0.20及以上
-	double instTorq;		///< 瞬时力矩
-} JointMonitorData;
-
-/**
-* @brief EXtio数据
-*/
-typedef struct
-{
-	int din[256];				  ///< 数字输入din[0]为有效信号的个数
-	int dout[256];				  ///< 数字输出dout[0]为有效信号的个数
-	float ain[256];				  ///< 模拟输入ain[0]为有效信号的个数
-	float aout[256];			      ///< 模拟输出aout[0]为有效信号的个数
+	int din[256];				  ///< Digital input din[0] is the number of valid signals
+	int dout[256];				  ///< Digital output dout[0] is the number of valid signals
+	float ain[256];				  ///< Analog input din[0] is the number of valid signals
+	float aout[256];			  ///< Analog output dout[0] is the number of valid signals
 } Io_group;
 
 /**
-* @brief 机器人监测数据
+* @brief Robot joint monitoring data
 */
 typedef struct
 {
-	double scbMajorVersion;				  ///< scb主版本号
-	double scbMinorVersion;				  ///< scb小版本号
-	double cabTemperature;				  ///< 控制器温度
-	double robotAveragePower;			  ///< 机器人平均电压
-	double robotAverageCurrent;			  ///< 机器人平均电流
-	JointMonitorData jointMonitorData[JAKA_ROBOT_MAX_JOINT]; ///< 机器人7个关节的监测数据
+	double instCurrent;		///< Instantaneous current
+	double instVoltage;		///< Instantaneous voltage
+	double instTemperature; ///< Instantaneous temperature
+	double instVel;			///< Instantaneous speed controller 1.7.0.20 and above
+	double instTorq;		///< Instantaneous torque
+} JointMonitorData;
+
+/**
+* @brief Robot monitoring data
+*/
+typedef struct
+{
+	double scbMajorVersion;				  ///< scb major version number
+	double scbMinorVersion;				  ///< scb minor version number
+	double cabTemperature;				  ///< Controller temperature
+	double robotAveragePower;			  ///< Robot average voltage
+	double robotAverageCurrent;			  ///< Robot average current
+	JointMonitorData jointMonitorData[6]; ///< Monitoring data of the robot's six joints
 } RobotMonitorData;
 
 /**
-* @brief 力矩传感器监测数据
+* @brief Torque sensor monitoring data
 */
 typedef struct
 {
-	char ip[20];		 ///< 力矩传感器ip地址
-	int port;			 ///< 力矩传感器端口号
-	PayLoad payLoad;	 ///< 工具负载
-	int status;			 ///< 力矩传感器状态
-	int errcode;		 ///< 力矩传感器异常错误码
-	double actTorque[6]; ///< 力矩传感器实际接触力值（勾选初始化时）或原始读数值（勾选不初始化时）
-	double torque[6];	 ///< 力矩传感器原始读数值
-	double realTorque[6];///< 力矩传感器实际接触力值（不随初始化选项变化）
+	char ip[20];		 ///< Torque sensor IP address
+	int port;			 ///< Torque sensor port number
+	PayLoad payLoad;	 ///< Tool load
+	int status;			 ///< Torque sensor status
+	int errcode;		 ///< Torque sensor abnormal error code
+	double actTorque[6]; ///< The actual contact force value of the torque sensor (when Initialize is checked) or the raw reading value (when Do Not Initialize is checked)
+	double torque[6];	 ///< Torque sensor raw reading value
+	double realTorque[6];///< The actual contact force value of the torque sensor (does not change with the initialization options)
 } TorqSensorMonitorData;
 
+
 /**
-* @brief 机器人状态监测数据,使用get_robot_status函数更新机器人状态数据
+* @brief Robot status monitoring data, use the get_robot_status function to update the robot status data
 */
 typedef struct
 {
-	int errcode;									///< 机器人运行出错时错误编号，0为运行正常，其它为运行异常
-	int inpos;										///< 机器人运动是否到位标志，0为没有到位，1为运动到位
-	int powered_on;									///< 机器人是否上电标志，0为没有上电，1为上电
-	int enabled;									///< 机器人是否使能标志，0为没有使能，1为使能
-	double rapidrate;								///< 机器人运动倍率
-	int protective_stop;							///< 机器人是否检测到碰撞，0为没有检测到碰撞，1为检测到碰撞
-	int emergency_stop;								///< 机器人是否急停，0为没有急停，1为急停
-	int dout[256];									///< 机器人控制柜数字输出信号,dout[0]为信号的个数
-	int din[256];									///< 机器人控制柜数字输入信号,din[0]为信号的个数	
-	double ain[256];								///< 机器人控制柜模拟输入信号,ain[0]为信号的个数
-	double aout[256];								///< 机器人控制柜模拟输出信号,aout[0]为信号的个数
-	int tio_dout[16];								///< 机器人末端工具数字输出信号,tio_dout[0]为信号的个数
-	int tio_din[16];								///< 机器人末端工具数字输入信号,tio_din[0]为信号的个数
-	double tio_ain[16];								///< 机器人末端工具模拟输入信号,tio_ain[0]为信号的个数
-	int tio_key[3];                                 ///< 机器人末端工具按钮 [0]free;[1]point;[2]pause_resume;
-	Io_group extio;								    ///< 机器人外部应用IO
-	Io_group modbus_slave;							///< 机器人Modbus从站
-	Io_group profinet_slave;						///< 机器人Profinet从站
-	Io_group eip_slave;								///< 机器人Ethernet/IP从站
-	unsigned int current_tool_id;					///< 机器人目前使用的工具坐标系id
-	double cartesiantran_position[6];				///< 机器人末端所在的笛卡尔空间位置
-	double joint_position[JAKA_ROBOT_MAX_JOINT];						///< 机器人关节空间位置
-	unsigned int on_soft_limit;						///< 机器人是否处于限位，0为没有触发限位保护，1为触发限位保护
-	unsigned int current_user_id;					///< 机器人目前使用的用户坐标系id
-	int drag_status;								///< 机器人是否处于拖拽状态，0为没有处于拖拽状态，1为处于拖拽状态
-	RobotMonitorData robot_monitor_data;			///< 机器人状态监测数据
-	TorqSensorMonitorData torq_sensor_monitor_data; ///< 机器人力矩传感器状态监测数据
-	int is_socket_connect;							///< sdk与控制器连接通道是否正常，0为连接通道异常，1为连接通道正常
+	int errcode;									///< Error number when the robot runs into an error. 0 means normal operation, and others mean abnormal operation.
+	int inpos;										///< The robot movement is in place, 0 means not in place, 1 means in place
+	int powered_on;									///< Whether the robot is powered on, 0 means no power, 1 means power on
+	int enabled;									///< Flag indicating whether the robot is enabled, 0 means not enabled, 1 means enabled
+	double rapidrate;								///< Robot movement ratio
+	int protective_stop;							///< Whether the robot detects a collision, 0 means no collision is detected, 1 means a collision is detected
+	int emergency_stop;								///< Whether the robot stops suddenly, 0 means no sudden stop, 1 means sudden stop
+	int dout[256];									///< Digital output signal of the robot control cabinet, dout[0] is the number of signals
+	int din[256];									///< Digital input signal of robot control cabinet, din[0] is the number of signals	
+	double ain[256];								///< Robot control cabinet analog input signal, ain[0] is the number of signals
+	double aout[256];								///< Robot control cabinet analog output signal, aout[0] is the number of signals
+	int tio_dout[16];								///< The digital output signal of the robot end tool, tio_dout[0] is the number of signals
+	int tio_din[16];								///< The digital input signal of the robot end tool, tio_din[0] is the number of signals
+	double tio_ain[16];								///< Robot end tool analog input signal, tio_ain[0] is the number of signals
+	int tio_key[3];                                 ///< Robot end tool buttons [0]free;[1]point;[2]pause_resume;
+	Io_group extio;								    ///< Robot external application IO
+	Io_group modbus_slave;							///< Robot Modbus Slave
+	Io_group profinet_slave;						///< Robot Profinet Slave
+	Io_group eip_slave;								///< Robot Ethernet/IP Slave
+	unsigned int current_tool_id;					///< The tool coordinate system id currently used by the robot
+	double cartesiantran_position[6];				///< The Cartesian space position of the robot end
+	double joint_position[6];						///< Robot joint space position
+	unsigned int on_soft_limit;						///< Whether the robot is in limit position, 0 means no limit protection is triggered, 1 means limit protection is triggered
+	unsigned int current_user_id;					///< The user coordinate system id currently used by the robot
+	int drag_status;								///< Whether the robot is in the dragging state, 0 means not in the dragging state, 1 means in the dragging state
+	RobotMonitorData robot_monitor_data;			///< Robot status monitoring data
+	TorqSensorMonitorData torq_sensor_monitor_data; ///< Robot torque sensor status monitoring data
+	int is_socket_connect;							///< Whether the connection channel between SDK and controller is normal, 0 means the connection channel is abnormal, 1 means the connection channel is normal
 } RobotStatus;
 
-/**
-* @brief 机器人错误码数据类型
-*/
-typedef struct
-{
-	long code;		   ///< 错误码编号
-	char message[120]; ///< 错误码对应提示信息
-} ErrorCode;
+
+typedef struct {
+    int motion_line;     ///<  motion CMD id
+    int motion_line_sdk; ///< reserved
+    BOOL inpos;          ///< current motion CMD is done, you should always check queue info at the same time
+    int err_add_line;   /// fail to add motion CMD in case robot is already at target position
+    int queue;           ///< number of motion CMD in queue
+    int active_queue;    ///< number of motion CMD which is under blending
+    BOOL queue_full;     ///< cannot push any more motion CMD if queue is full
+    BOOL paused;
+
+    BOOL isOnLimit;     ///< soft limit
+    BOOL isInEstop;     ///< emergency stop
+    BOOL isInCollision; ///< collision
+} MotionStatus;
 
 /**
-* @brief 轨迹复现配置参数存储数据类型
-*/
-typedef struct
-{
-	double xyz_interval; ///< 空间位置采集精度
-	double rpy_interval; ///< 姿态采集精度
-	double vel;			 ///< 执行脚本运行速度
-	double acc;			 ///< 执行脚本运行加速度
+ * @brief config for trajectory record
+ */
+typedef struct {
+    double xyz_interval; ///< cartesian translation acquisition accuracy
+    double rpy_interval; ///< cartesian orientation acquisition accuracy
+    double vel;          ///< velocity setting for scripty execution
+    double acc;          ///< acceleration setting for scripty execution
 } TrajTrackPara;
 
-#define MaxLength  256
 /**
-* @brief 多个字符串存储数据类型
-*/
-typedef struct
-{
-	int len;			 ///< 字符串个数
-	char name[MaxLength][MaxLength]; ///< 数据存储二维数组
-} MultStrStorType;
-
-/**
-* @brief 运动参数可选项
-*/
-typedef struct
-{
-	int executingLineId; ///< 控制命令id编号
-} OptionalCond;
-
-/**
-* @brief 网络异常机器人运动自动终止类型枚举
-*/
-typedef enum
-{
-	MOT_KEEP,  ///< 网络异常时机器人继续保持原来的运动
-	MOT_PAUSE, ///< 网络异常时机器人暂停运动
-	MOT_ABORT  ///< 网络异常时机器人终止运动
-} ProcessType;
-
-/**
-* @brief 柔顺控制参数类型
-*/
-typedef struct
-{
-	int opt;			 ///< 柔顺方向，可选值为 1 2 3 4 5 6分别对应 fx fy fz mx my mz,0代表没有勾选
-	double ft_user;		 ///< 用户用多大的力才能让机器人的沿着某个方向以最大速度进行运动
-	double ft_rebound;	 ///< 回弹力:机器人回到初始状态的能力
-	double ft_constant;	 ///< 恒力
-	int ft_normal_track; ///< 法向跟踪是否开启，0为没有开启，1为开启
+ * @brief admittance config param
+ */
+typedef struct {
+    int axis;
+    int opt;             ///< 0: disable, 1: enable
+    double ft_user;      ///< the force value to let robot move in MAX velocity, also naming as ft_damping
+    double ft_rebound;   ///< rebound force, ability for robot to go back to init position
+    double ft_constant;  ///< constant force
+    int ft_normal_track; ///< normal vector track，0: disable，1: enable. deprecated, cannot set any more(always disabled).
 } AdmitCtrlType;
 
 /**
-* @brief 机器人柔顺控制参数类型
-*/
-typedef struct
-{
-	AdmitCtrlType admit_ctrl[6];
+ * @brief robot admittance control configs collection
+ */
+typedef struct {
+    AdmitCtrlType admit_ctrl[6];
 } RobotAdmitCtrl;
 
 /**
-* @brief 速度柔顺控制等级和比率等级设置
-* 速度柔顺控制分三个等级，并且  1>rate1>rate2>rate3>rate4>0
-* 等级为1时，只能设置rate1,rate2两个等级。rate3,rate4的值为0
-* 等级为2时，只能设置rate1,rate2，rate3 三个等级。rate4的值为0
-* 等级为3时，能设置 rate1,rate2，rate3,rate4 4个等级
-*/
-typedef struct
-{
-	int vc_level; //速度柔顺控制等级
-	double rate1; //比率1等级
-	double rate2; //比率2等级
-	double rate3; //比率3等级
-	double rate4; //比率4等级
+ * @brief velocity force control setting
+ * there are 3 levels to set，and 1>rate1>rate2>rate3>rate4>0
+ * at level 1，able to set rate1,rate2。rate3 and rate4, both are 0
+ * at level 2，able to set rate1,rate2，rate3. rate4 is 0
+ * at level 3，able to set rate1,rate2，rate3,rate4
+ */
+typedef struct {
+    int vc_level; ///< velocity force control level setting
+    double rate1; ///<
+    double rate2; ///<
+    double rate3; ///<
+    double rate4; ///<
 } VelCom;
 
 /**
-* @brief 力传感器的受力分量和力矩分量
-*/
-typedef struct
-{
-	double fx; // 沿x轴受力分量
-	double fy; // 沿y轴受力分量
-	double fz; // 沿z轴受力分量
-	double tx; // 绕x轴力矩分量
-	double ty; // 绕y轴力矩分量
-	double tz; // 绕z轴力矩分量
+ * @brief force control components
+ */
+typedef struct {
+    double fx; ///< x componet
+    double fy; ///< y componet
+    double fz; ///< z componet
+    double tx; ///< rx componet
+    double ty; ///< ry componet
+    double tz; ///< rz componet
 } FTxyz;
 
-/**
-* @brief ftp文件数据类型
-*/
-struct FtpFile
-{
-	const char *filename;
-	FILE *stream;
-};
+typedef struct {
+    double linear[3];
+    double angular[3];
+} VelocityLimit;
+typedef struct {
+    int id;           ///< Unique identifier of the sensor (assigned by system)
+    int sensor_model; ///< Sensor model ID, 2 for USB sensor, 6 for TIO sensor
+    char name[32];    ///< Human-readable sensor name (null-terminated C string)
+    int active;       ///< Activation status: 1 if normal, 0 if the sensor is to be deleted
+    int status;       ///< Current operational status code of the sensor: 1 if normal, -1 if in error
+} FTSensorBasicInfo;
 
-/**
- *  @brief DH参数
- */
+typedef struct {
+    int count;  ///< Number of sensors
+    FTSensorBasicInfo info[MAX_FTSENSOR_CNT];   ///< Array to hold sensor information
+} FTSensorBasicInfoStr;
+
+typedef struct {
+    int rule_id;   ///< User-defined rule identifier, can be 0,1,2
+    int sensor_id; ///< ID of the associated force-torque sensor
+    int active;    ///< Enable flag: 1 for enabled, 0 for disabled
+    FTxyz ft;      ///< Force and torque threshold values
+} FTSensorSoftLimitRule;
+
+typedef struct {
+    FTSensorSoftLimitRule rule[3];   ///< Array to hold sensor information
+} FTSensorSoftLimitRuleStr;
+
+typedef struct {
+    int count;
+    int sensor_id[MAX_FTSENSOR_CNT];
+} FTLinkedSensorIDStr;
+
+typedef struct {
+    FTxyz ft;
+    double min_val;
+    double max_val;
+} FTSensorThresholdStr;
+
+typedef struct {
+    int status;
+    FTxyz ft;
+} FTSensorDataStr;
+typedef struct {
+    int sensor_model;    ///< Sensor model identifier
+    char name[50];       ///< Name of the sensor
+    char comm_param[50]; ///< Communication parameters
+} FTSensorConfigStr;
+
+typedef struct {
+    double jVel[6]; ///< each joint，unit: rad/s
+} JointVelocity;
+typedef struct {
+    double jtorq[6]; ///< each joint torque，unit：N/m
+} JointTorque;
 typedef struct
 {
-	double alpha[JAKA_ROBOT_MAX_JOINT];
-	double a[JAKA_ROBOT_MAX_JOINT];
-	double d[JAKA_ROBOT_MAX_JOINT];
-	double joint_homeoff[JAKA_ROBOT_MAX_JOINT];
+    int cab_din[16];
+    int cab_dout[16];
+    double cab_ain[2];
+    double cab_aout[2];
+    int tool_din[2];
+    int tool_dout[2];
+    double tool_ain[2];
+} EdgIOState;
+
+typedef struct {
+    JointValue jointVal; ///< each joint position，unit：rad
+    JointVelocity jointVel; ///< each joint velocity, unit: rad/s
+    JointTorque jointTorq; ///< each joint torque，unit：N/m
+    CartesianPose cartpose;
+    FTxyz torqSensor; 
+    EdgIOState IOState;
+} EDGState;
+/**
+ @brief
+ */
+typedef enum { FTFrame_Tool = 0, FTFrame_World = 1 } FTFrameType;
+
+/**
+ *  @brief DH parameters
+ */
+typedef struct {
+    double alpha[6];
+    double a[6];
+    double d[6];
+    double joint_homeoff[6];
 } DHParam;
 
 /**
- *  @brief rs485信号量参数
+ *  @brief rs485 signal config param
  */
-typedef struct
-{
-	char sig_name[20];//标识名
-	int chn_id;		//RS485通道ID
-	int sig_type;	//信号量类型
-	int sig_addr;	//寄存器地址
-	int value;		//值  设置时无效
-	int frequency;	//信号量在控制器内部刷新频率不大于10
-}SignInfo;
+typedef struct {
+    char sig_name[20]; ///< signal name
+    int chn_id;        ///< RS485 channel id
+    int sig_type;      ///< type
+    int sig_addr;      ///< address
+    int value;         ///<
+    int frequency;     ///< must no greater than 20
+} SignInfo;
+
+typedef struct {
+    char sig_name[20]; ///< signal name
+    int frequency;     ///< must no greater than 20
+} SignInfo_simple;
 
 /**
- *  @brief rs485RTU配置参数
+ *  @brief rs485 RTU signal config param
  */
+typedef struct {
+    int chn_id;   ///< RS485 channel ID
+    int slaveId;  ///< slave station id, only used with Modbus RTU
+    int baudrate; ///< 4800,9600,14400,19200,38400,57600,115200,230400
+    int databit;  ///< 7，8
+    int stopbit;  ///< 1，2
+    int parity;   ///< 78->no check, 79->odd parity check, 69->even parity check
+} ModRtuComm;
+
+/**
+* @brief basic robot stat
+*/
 typedef struct
 {
-	int chn_id;		//RS485通道ID  查询时chn_id作为输入参数
-	int slaveId;	//当通道模式设置为Modbus RTU时，需额外指定Modbus从站节点ID，其余模式可忽略
-	int baudrate;	//波特率4800,9600,14400,19200,38400,57600,115200,230400
-	int databit;	//数据位7，8
-	int stopbit;	//停止位1，2
-	int parity;		//校验位78-> 无校验 79->奇校验 69->偶校验
-}ModRtuComm;
+	int errcode;	///< 0: normal, others: errorcode
+	char errmsg[200]; ///< controller errmsg
+	
+	int powered_on;	///< 0: power off，1: power on
+	int enabled;	///< 0: disabled，1: enabled
+} RobotStatus_simple;
+
+/**
+* @brief not used
+*/
+typedef struct
+{
+	int executingLineId; ///< cmd id
+} OptionalCond;
+
+/**
+ *@brief 
+ */
+typedef struct{
+	BOOL estoped;     // estop
+	BOOL poweredOn;		// power on
+	BOOL servoEnabled;	// enable robot or not
+}RobotState;
+
+#define MaxLength  256
+/**
+* @brief 
+*/
+typedef struct
+{
+	int len;			             ///< length
+	char name[MaxLength][MaxLength]; ///< 
+} MultStrStorType;
+
+/**
+* @brief tool drive config
+*/
+typedef struct
+{
+	int opt;			///< 0: disable, 1: enable
+	int axis;			///< axis index, [0,5]
+	double rebound;	 	///< rebound ability
+	double rigidity;	///< 
+} ToolDriveConfig;
+
+/**
+* @brief 
+*/
+typedef struct
+{
+	ToolDriveConfig config[6];
+} RobotToolDriveCtrl;
+
+typedef enum {
+    ActualData = 0,
+    NormalData = 1,
+    RealData = 2
+}TorqueDataType;
+
+/**
+* @brief torque sensor data
+*/
+typedef struct
+{
+	int status;
+	int errorCode;
+	FTxyz data;
+} TorqSensorData;
+
+typedef struct{
+    int opt; // 0:disable, 1:enable
+    int axis;
+
+    int lower_limit_opt;
+    double lower_limit;
+
+    int upper_limit_opt;
+    double upper_limit;
+
+} ForceStopCondition;
+
+typedef struct{
+    ForceStopCondition condition[6];
+} ForceStopConditionList;
+
+/**
+* @brief error information
+*/
+typedef struct
+{
+	long code;		   ///< error code
+	char message[120]; ///< error message
+} ErrorCode;
 
 typedef struct
 {
-	double joint_torque[JAKA_ROBOT_MAX_JOINT];	// 各关节转矩
-}JointTorque;
+	int gain[6]; ///< error message
+} DragFrictionCompensationGainList;
 
+/**
+* @brief callback
+* @param info remember to assign char array, no less than 1024 bytes
+				the feedback info contains at least 3 data part: "section", "key", "data"
+				which is packed as json. The "data" part represent the current(new) value
+*/
+typedef void (*CallBackFuncType)(char* info);
+
+typedef struct{
+    double end_pos[MAX_AXIS];
+    double j_vel;
+    double j_acc;
+    double j_jerk;
+    double blend_tol;
+} MovejInfo;
+
+typedef struct{
+    CartesianPose end_pos;
+    double vel;
+    double acc;
+    double jerk;
+    double ori_vel;
+    double ori_acc;
+    double ori_jerk;
+    double blend_tol;
+} MovelInfo;
+
+typedef struct{
+
+    CartesianPose mid_pos;
+    CartesianPose end_pos;
+    double vel;
+    double acc;
+    double jerk;
+    double ori_vel;
+    double ori_acc;
+    double ori_jerk;
+    double blend_tol;
+    double circle_cnt;
+    int circle_mode;
+} MovecInfo;
+typedef enum{
+    JOINT_MOVE = 0,
+    LINEAR_MOVE = 1,
+    CIRCULAR_MOVE = 2
+} MoveType;
+
+typedef struct{
+    int motion_unit_type;
+    int motion_unit_id; // robot_id(motion_unit_type is 0) or ext_id(motion_unit_type is 1)
+    MoveType move_type;
+    MoveMode move_mode;
+    MovejInfo movej_info;
+    MovelInfo movel_info;
+    MovecInfo movec_info;
+}MultiMovInfo;
+
+typedef struct {
+    int count;  ///< Number of move
+    MultiMovInfo info[MAX_EXT_CNT];
+} MultiMovInfoList;
+
+typedef struct
+{
+    BOOL is_powered;    // 已上电
+    BOOL is_powering;   // 正在上电
+    BOOL is_enabled;    // 已使能
+    BOOL is_enabling;   // 正在使能
+    BOOL is_inpos;      // 已到位
+    BOOL is_on_limit;   // 是否处于限位
+    double pos_cmd;     //  目标位置
+    double pos_fdb;     //  反馈位置
+} ExtAxisStatus;
+
+typedef struct
+{
+    int count;
+    ExtAxisStatus status[MAX_EXT_CNT];
+}ExtAxisStatusList;
 
 #endif

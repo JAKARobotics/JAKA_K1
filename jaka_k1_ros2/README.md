@@ -1,11 +1,11 @@
 # JAKA K1 ROS2 Workspace
 
-ROS 2 workspace for controlling, simulating and planning for the JAKA K1 dual-arm robot.
+ROS 2 workspace for controlling, simulating and planning for the **JAKA K1 CAN dual-arm** robot.
 This repo contains a low-level driver that wraps the JAKA K1 SDK, a MoveIt server/action bridge, URDF/meshes, and an Isaac Sim integration layer.
 
 ## 🏁 Quick start 
 
-**Prereqs:** ROS 2 Humble , compiler with C++17, and the JAKA's SDK library shipped in this workspace (`libjakaAPI_2_3_3.so`) with its header files .
+**Prereqs:** ROS 2 Humble , compiler with C++17, and the JAKA's SDK library shipped in this workspace (`libjakaAPI_2_3_0_DUAL_7.so`) with its header files .
 
 ### 🔧 Build Instructions
 
@@ -55,7 +55,7 @@ ros2 launch jaka_k1_moveit_config demo.launch.py
 
 ### 1. jaka_k1_driver
 
-- Node `jaka_k1_driver` — connects to controller using JAKA's SDK `libjakaAPI_2_3_3.so` included in **jaka_k1_driver/lib**, and exposes:
+- Node `jaka_k1_driver` — connects to controller using JAKA's SDK `libjakaAPI_2_3_0_DUAL_7.so` included in **jaka_k1_driver/lib**, and exposes:
 
     - Topics
         - `/jaka_k1_driver/tool_position` (geometry_msgs/TwistStamped) — dual-arm TCP cartesian pose
@@ -83,7 +83,7 @@ ros2 launch jaka_k1_moveit_config demo.launch.py
 
 ### 3. jaka_k1_planner
 
-- links against `libjakaAPI_2_3_3.so` included in **jaka_k1_planner/lib**. 
+- links against `libjakaAPI_2_3_0_DUAL_7.so` included in **jaka_k1_planner/lib**. 
 - Action server that implements `FollowJointTrajectory` for:
     - `/jaka_k1_full_robot_controller/follow_joint_trajectory` (14 joints — dual-arm)
     - `/jaka_k1_arm_l_controller/follow_joint_trajectory `(7 joints left-arm)
