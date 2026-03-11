@@ -107,8 +107,8 @@ bool linear_move_callback(
     }
 
     // Ensure EDG servo mode is OFF on both arms (prevents preemption)
-    robot.servo_move_enable(FALSE, 0);
-    robot.servo_move_enable(FALSE, 1);
+    robot.servo_move_enable(FALSE, 1, 0);
+    robot.servo_move_enable(FALSE, 1, 1);
     this_thread::sleep_for(chrono::milliseconds(50));
 
     // Build CartesianPose targets
@@ -243,8 +243,8 @@ bool joint_move_callback(
     }
 
     // Ensure EDG servo mode is OFF on both arms (prevents preemption)
-    robot.servo_move_enable(FALSE, 0);
-    robot.servo_move_enable(FALSE, 1);
+    robot.servo_move_enable(FALSE, 1, 0);
+    robot.servo_move_enable(FALSE, 1, 1);
     this_thread::sleep_for(chrono::milliseconds(50));
 
     // Build per-arm JointValue targets 
@@ -326,9 +326,10 @@ bool servo_move_enable_callback(
     }
 
     const BOOL enable = req->enable ? TRUE : FALSE;
+    const BOOL is_block = req->is_block ? TRUE : FALSE;
 
     // Call dual-arm SDK 
-    const int ret = robot.servo_move_enable(enable, robindex);
+    const int ret = robot.servo_move_enable(enable, is_block, robindex);
 
     if (ret == 0) {
         res->ret = 1;
