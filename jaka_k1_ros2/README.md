@@ -3,6 +3,19 @@
 ROS 2 workspace for controlling, simulating and planning for the **JAKA K1 CAN dual-arm** robot.
 This repo contains a low-level driver that wraps the JAKA K1 SDK, a MoveIt server/action bridge, URDF/meshes, and an Isaac Sim integration layer.
 
+
+### For JAKA K1 EtherCAT Dual-Arm Users
+If you have the `JAKA K1 EtherCAT dual-arm` robot (rather than the CAN version), please use the dedicated [EtherCAT branch](https://github.com/JAKARobotics/JAKA_K1/tree/EtherCAT_K1_dual-arm):
+
+```bash
+# Clone and switch to the EtherCAT branch
+git clone git@github.com:JAKARobotics/JAKA_K1.git
+cd JAKA_K1
+git checkout EtherCAT_K1_dual-arm
+```
+Then follow the build instructions in that branch's README.
+
+
 ## 🏁 Quick start 
 
 **Prereqs:** ROS 2 Humble , compiler with C++17, and the JAKA's SDK library shipped in this workspace (`libjakaAPI_2_3_0_DUAL_7.so`) with its header files .
