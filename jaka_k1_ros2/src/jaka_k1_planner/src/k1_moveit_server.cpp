@@ -170,7 +170,7 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &sch);
 
     // Enable EDG servo for both arms
-    if (robot.servo_move_enable(TRUE, 0) != 0 || robot.servo_move_enable(TRUE, 1) != 0) {
+    if (robot.servo_move_enable(TRUE, 1, 0) != 0 || robot.servo_move_enable(TRUE, 1, 1) != 0) {
       RCLCPP_ERROR(node->get_logger(), "servo_move_enable failed");
       gh->abort(make_shared<Follow::Result>());
       return;
@@ -198,8 +198,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
       // Allow cancel
       if (gh->is_canceling()) {
         robot.motion_abort();
-        robot.servo_move_enable(FALSE, 0);
-        robot.servo_move_enable(FALSE, 1);
+        robot.servo_move_enable(FALSE, 1, 0);
+        robot.servo_move_enable(FALSE, 1, 1);
         gh->canceled(make_shared<Follow::Result>());
         return;
       }
@@ -207,8 +207,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
       const auto& pt = traj.points[i];
       if (pt.positions.size() != 14) {
         RCLCPP_ERROR(node->get_logger(), "Point %zu has %zu positions (need 14)", i, pt.positions.size());
-        robot.servo_move_enable(FALSE, 0);
-        robot.servo_move_enable(FALSE, 1);
+        robot.servo_move_enable(FALSE, 1, 0);
+        robot.servo_move_enable(FALSE, 1, 1);
         gh->abort(make_shared<Follow::Result>());
         return;
       }
@@ -246,8 +246,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
       if (retL != 0 || retR != 0) {
         RCLCPP_ERROR(node->get_logger(), "edg_servo_j failed: L=%s R=%s",
                     mapErr[retL].c_str(), mapErr[retR].c_str());
-        robot.servo_move_enable(FALSE, 0);
-        robot.servo_move_enable(FALSE, 1);
+        robot.servo_move_enable(FALSE, 1, 0);
+        robot.servo_move_enable(FALSE, 1, 1);
         gh->abort(make_shared<Follow::Result>());
         return;
       }
@@ -303,8 +303,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
       robot.robot_is_in_error(inerr);
       if (in_col || inerr[0] || inerr[1]) {
         RCLCPP_WARN(node->get_logger(), "Abort: collision=%d errL=%d errR=%d", in_col, inerr[0], inerr[1]);
-        robot.servo_move_enable(FALSE, 0);
-        robot.servo_move_enable(FALSE, 1);
+        robot.servo_move_enable(FALSE, 1, 0);
+        robot.servo_move_enable(FALSE, 1, 1);
         gh->abort(make_shared<Follow::Result>()); 
         return;
       }
@@ -354,8 +354,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
 
       // Timeout
       if (chrono::steady_clock::now() >= deadline) {
-        robot.servo_move_enable(FALSE, 0);
-        robot.servo_move_enable(FALSE, 1);
+        robot.servo_move_enable(FALSE, 1, 0);
+        robot.servo_move_enable(FALSE, 1, 1);
         RCLCPP_WARN(node->get_logger(), "Timeout waiting for the target position (errL=%.4f errR=%.4f)", errL, errR);
         gh->abort(make_shared<Follow::Result>());
         return;
@@ -368,8 +368,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
     }
 
     // shutdown servo mode for both arms
-    robot.servo_move_enable(FALSE, 0);
-    robot.servo_move_enable(FALSE, 1);
+    robot.servo_move_enable(FALSE, 1, 0);
+    robot.servo_move_enable(FALSE, 1, 1);
 
     // final check for errors to decide success/abort
     (inerr[0]||inerr[1]) ? gh->abort(make_shared<Follow::Result>())
@@ -394,7 +394,7 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &sch);
 
     // Enable EDG servo for both arms (to send the *other* arm a hold command)
-    if (robot.servo_move_enable(TRUE,0) != 0 || robot.servo_move_enable(TRUE, 1) != 0) {
+    if (robot.servo_move_enable(TRUE, 1, 0) != 0 || robot.servo_move_enable(TRUE, 1, 1) != 0) {
       RCLCPP_ERROR(node->get_logger(), "servo_move_enable failed");
       gh->abort(make_shared<Follow::Result>());
       return;
@@ -415,8 +415,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
     if (robot.edg_get_stat(other, &other_hold, nullptr) != 0) {
       RCLCPP_WARN(node->get_logger(), "edg_get_stat failed when reading other arm; aborting");
       // disable servos we enabled
-      robot.servo_move_enable(FALSE, 0);
-      robot.servo_move_enable(FALSE, 1);
+      robot.servo_move_enable(FALSE, 1, 0);
+      robot.servo_move_enable(FALSE, 1, 1);
       gh->abort(make_shared<Follow::Result>());
       return;
     }
@@ -434,8 +434,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
       // Allow cancel
       if (gh->is_canceling()) {
         robot.motion_abort();
-        robot.servo_move_enable(FALSE, 0);
-        robot.servo_move_enable(FALSE, 1);
+        robot.servo_move_enable(FALSE, 1, 0);
+        robot.servo_move_enable(FALSE, 1, 1);
         gh->canceled(make_shared<Follow::Result>());
         return;
       }
@@ -443,8 +443,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
       const auto& pt = traj.points[i];
       if (pt.positions.size() != 7) {
         RCLCPP_ERROR(node->get_logger(), "Point %zu has %zu positions (need 7)", i, pt.positions.size());
-        robot.servo_move_enable(FALSE, 0);
-        robot.servo_move_enable(FALSE, 1);
+        robot.servo_move_enable(FALSE, 1, 0);
+        robot.servo_move_enable(FALSE, 1, 1);
         gh->abort(make_shared<Follow::Result>());
         return;
       } 
@@ -480,8 +480,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
       if (retArm!=0 || retOther!=0) { 
         RCLCPP_ERROR(node->get_logger(), "edg_servo_j failed: arm=%s other=%s",
                     mapErr[retArm].c_str(), mapErr[retOther].c_str());
-        robot.servo_move_enable(FALSE,0); 
-        robot.servo_move_enable(FALSE, 1);
+        robot.servo_move_enable(FALSE, 1, 0); 
+        robot.servo_move_enable(FALSE, 1, 1);
         gh->abort(make_shared<Follow::Result>()); 
         return; 
       } 
@@ -534,8 +534,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
       robot.robot_is_in_error(inerr);
       if (in_col || inerr[arm] || inerr[other]) {
         RCLCPP_WARN(node->get_logger(), "Abort: collision=%d errArm=%d errOther=%d", in_col, inerr[arm], inerr[other]);
-        robot.servo_move_enable(FALSE, 0);
-        robot.servo_move_enable(FALSE, 1);
+        robot.servo_move_enable(FALSE, 1, 0);
+        robot.servo_move_enable(FALSE, 1, 1);
         gh->abort(make_shared<Follow::Result>());
         return;
       }
@@ -572,8 +572,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
 
       // Timeout
       if (chrono::steady_clock::now() >= deadline) {
-        robot.servo_move_enable(FALSE, 0);
-        robot.servo_move_enable(FALSE, 1);
+        robot.servo_move_enable(FALSE, 1, 0);
+        robot.servo_move_enable(FALSE, 1, 1);
         RCLCPP_WARN(node->get_logger(), "Timeout waiting for the target position (errArm=%.4f)", errArm);
         gh->abort(make_shared<Follow::Result>());
         return;
@@ -586,8 +586,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
     }
 
     // shutdown servo mode for both arms
-    robot.servo_move_enable(FALSE, 0);
-    robot.servo_move_enable(FALSE, 1);
+    robot.servo_move_enable(FALSE, 1, 0);
+    robot.servo_move_enable(FALSE, 1, 1);
 
     // final check for errors to decide success/abort
     (inerr[0]||inerr[1]) ? gh->abort(make_shared<Follow::Result>())
@@ -643,8 +643,8 @@ int main(int argc, char** argv)
     rclcpp::Rate rate(125);
 
     // Make sure both arms are out of servo mode at startup
-    robot.servo_move_enable(FALSE, 0);
-    robot.servo_move_enable(FALSE, 1);
+    robot.servo_move_enable(FALSE, 1, 0);
+    robot.servo_move_enable(FALSE, 1, 1);
     rclcpp::sleep_for(chrono::milliseconds(500));
 
     // Filter param
