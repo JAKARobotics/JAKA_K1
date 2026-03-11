@@ -10,7 +10,7 @@ This repo contains a low-level driver that wraps the JAKA K1 SDK, a MoveIt serve
 ### 🔧 Build Instructions
 
 ```bash
-git clone git@github.com:JAKARobotics/JAKA_K1.git
+git clone --branch CAN_K1_dual-arm git@github.com:JAKARobotics/JAKA_K1.git
 cd JAKA_K1/jaka_k1_ros2/
 source /opt/ros/humble/setup.bash
 colcon build --symlink-install
