@@ -5,7 +5,7 @@ This repo contains a low-level driver that wraps the JAKA K1 SDK, a MoveIt serve
 
 ## 🏁 Quick start 
 
-**Prereqs:** ROS 2 Humble , compiler with C++17, and the JAKA's SDK library shipped in this workspace (`libjakaAPI_2_3_3.so`) with its header files .
+**Prereqs:** ROS 2 Humble , compiler with C++17, and the JAKA's SDK library shipped in this workspace (`libjakaAPI_2_3_0_DUAL_7.so`) with its header files .
 
 ### 🔧 Build Instructions
 
@@ -55,7 +55,7 @@ ros2 launch jaka_k1_moveit_config demo.launch.py
 
 ### 1. jaka_k1_driver
 
-- Node `jaka_k1_driver` — connects to controller using JAKA's SDK `libjakaAPI_2_3_3.so` included in **jaka_k1_driver/lib**, and exposes:
+- Node `jaka_k1_driver` — connects to controller using JAKA's SDK `libjakaAPI_2_3_0_DUAL_7.so` included in **jaka_k1_driver/lib**, and exposes:
 
     - Topics
         - `/jaka_k1_driver/tool_position` (geometry_msgs/TwistStamped) — dual-arm TCP cartesian pose
@@ -83,7 +83,7 @@ ros2 launch jaka_k1_moveit_config demo.launch.py
 
 ### 3. jaka_k1_planner
 
-- links against `libjakaAPI_2_3_3.so` included in **jaka_k1_planner/lib**. 
+- links against `libjakaAPI_2_3_0_DUAL_7.so` included in **jaka_k1_planner/lib**. 
 - Action server that implements `FollowJointTrajectory` for:
     - `/jaka_k1_full_robot_controller/follow_joint_trajectory` (14 joints — dual-arm)
     - `/jaka_k1_arm_l_controller/follow_joint_trajectory `(7 joints left-arm)
@@ -105,15 +105,15 @@ ros2 launch jaka_k1_moveit_config demo.launch.py
 
 ```bash
 ros2 service call /jaka_k1_driver/joint_move jaka_k1_msgs/srv/Move "{
-  robot_index: -1,
+  robot_index: 1,
   is_block: true,
   mode_left: 0,
   mode_right: 0,
-  pose_left:  [1.57 ,0 ,0 ,-1.57 ,-1.57 ,1.57 ,0],   # placeholder (will be filled)
+  pose_left:  [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],   # placeholder (will be filled)
   pose_right: [1.57 ,0 ,0 ,-1.57 ,-1.57 ,1.57 ,0],   # radians
-  vel_left: 0.1,
+  vel_left: 0.0,
   vel_right: 0.1,
-  acc_left: 0.1,
+  acc_left: 0.0,
   acc_right: 0.1
 }"
 ```

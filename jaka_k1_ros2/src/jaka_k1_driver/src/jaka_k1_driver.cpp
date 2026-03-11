@@ -64,6 +64,21 @@ rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr tool_position_pub
 rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_position_pub;
 rclcpp::Publisher<jaka_k1_msgs::msg::RobotStates>::SharedPtr robot_states_pub;
 
+// Global EDG broadcast IP used by edg_init calls
+static std::string edg_init_ip = "255.255.255.255";
+
+/// Make EDG broadcast IP by replacing last IPv4 octet with 255.
+/// If input doesn't contain a '.' (not IPv4), returns input unchanged.
+static std::string make_edg_bcast(const std::string &ip)
+{
+    auto last_oct = ip.find_last_of('.');
+    if (last_oct == std::string::npos) {
+        // not an IPv4-like string — return unchanged (fallback)
+        return ip;
+    }
+    return ip.substr(0, last_oct + 1) + "255";
+}
+
 
 bool linear_move_callback(
     const shared_ptr<jaka_k1_msgs::srv::Move::Request> req,
@@ -90,7 +105,6 @@ bool linear_move_callback(
         res->message = "mode_left/mode_right must be 0 (ABS) or 1 (INCR)";
         return false;
     }
-
 
     // Ensure EDG servo mode is OFF on both arms (prevents preemption)
     robot.servo_move_enable(FALSE, 0);
@@ -375,7 +389,8 @@ bool edg_servo_p_callback(
         RCLCPP_DEBUG(rclcpp::get_logger("edg_servo_p_callback"), "%s", s.str().c_str());
     }
 
-    robot.servo_move_use_none_filter();
+    robot.servo_move_use_none_filter(0);
+    robot.servo_move_use_none_filter(1);
     sched_param sch;
     sch.sched_priority = 90;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &sch);
@@ -437,7 +452,8 @@ bool edg_servo_j_callback(
     // // step_num guard: EDG expects >=1
     // unsigned int step = (req->step_num == 0) ? 1 : req->step_num;
 
-    robot.servo_move_use_none_filter();
+    robot.servo_move_use_none_filter(0);
+    robot.servo_move_use_none_filter(1);
     sched_param sch;
     sch.sched_priority = 90;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &sch);
@@ -1080,7 +1096,7 @@ void robot_states_callback(const rclcpp::Publisher<jaka_k1_msgs::msg::RobotState
     ret = robot.is_in_drag_mode(in_drag);
     if (ret != 0) {
         RCLCPP_ERROR(rclcpp::get_logger("robot_states_callback"),
-                    "is_in_drag_mode failed: %s", mapErr[ret].c_str());
+                    "is_in_drag_mode failed: %d (%s)", ret, mapErr[ret].c_str());
         ok = false;
     }
     robot_states.drag_left = (in_drag[0] != 0);
@@ -1162,6 +1178,9 @@ int main(int argc, char *argv[])
     string default_ip = "127.0.0.1";
     string robot_ip = node->declare_parameter("ip", default_ip);
 
+    edg_init_ip = make_edg_bcast(robot_ip);
+    RCLCPP_INFO(node->get_logger(), "EDG init IP set to: %s", edg_init_ip.c_str());
+
     // Connect
     int ret = robot.login_in(robot_ip.c_str());
     if (ret != 0) 
@@ -1230,6 +1249,9 @@ int main(int argc, char *argv[])
             return -1; 
         }
     }
+
+    // Global call for edg_init
+    robot.edg_init(1, edg_init_ip.c_str());
 
     // Configure controller behavior on SDK link loss
     {
