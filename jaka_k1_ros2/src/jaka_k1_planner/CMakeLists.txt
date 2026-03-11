@@ -54,7 +54,7 @@ set(LIBRARY_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 link_directories(${LIBRARY_DIR})
 
 # Find the library and link it properly
-target_link_libraries(k1_moveit_server ${LIBRARY_DIR}/libjakaAPI_2_3_3.so)
+target_link_libraries(k1_moveit_server ${LIBRARY_DIR}/libjakaAPI_2_3_0_DUAL_7.so)
 
 # Install executables
 install(TARGETS
@@ -68,5 +68,3 @@ install(DIRECTORY launch/
 )
 
 ament_package()
-
-

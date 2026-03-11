@@ -41,6 +41,21 @@ using GoalHandle = rclcpp_action::ServerGoalHandle<Follow>;
 
 rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_states_pub;
 
+// Global EDG broadcast IP used by edg_init calls
+static std::string edg_init_ip = "255.255.255.255";
+
+/// Make EDG broadcast IP by replacing last IPv4 octet with 255.
+/// If input doesn't contain a '.' (not IPv4), returns input unchanged.
+static std::string make_edg_bcast(const std::string &ip)
+{
+    auto last_oct = ip.find_last_of('.');
+    if (last_oct == std::string::npos) {
+        // not an IPv4-like string — return unchanged (fallback)
+        return ip;
+    }
+    return ip.substr(0, last_oct + 1) + "255";
+}
+
 // --- Per-arm EDG access guards (avoid overlapping commands on the same arm)
 static mutex g_arm_mtx[2]; // 0=LEFT, 1=RIGHT
 
@@ -148,7 +163,8 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
     unique_lock<mutex> lk0(g_arm_mtx[0], adopt_lock);
     unique_lock<mutex> lk1(g_arm_mtx[1], adopt_lock);
 
-    robot.servo_move_use_none_filter();
+    robot.servo_move_use_none_filter(0);
+    robot.servo_move_use_none_filter(1);
     sched_param sch;
     sch.sched_priority = 90;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &sch);
@@ -372,7 +388,7 @@ void execute_goal(const shared_ptr<GoalHandle> gh, rclcpp::Node::SharedPtr node,
     unique_lock<mutex> lk0(g_arm_mtx[0], adopt_lock);
     unique_lock<mutex> lk1(g_arm_mtx[1], adopt_lock);
 
-    robot.servo_move_use_none_filter();
+    robot.servo_move_use_none_filter(kind);
     sched_param sch;
     sch.sched_priority = 90;
     pthread_setschedparam(pthread_self(), SCHED_FIFO, &sch);
@@ -618,6 +634,9 @@ int main(int argc, char** argv)
     // Read parameters
     string default_ip = "127.0.0.1";
     string robot_ip = node->declare_parameter("ip", default_ip);
+      
+    edg_init_ip = make_edg_bcast(robot_ip);
+    RCLCPP_INFO(node->get_logger(), "EDG init IP set to: %s", edg_init_ip.c_str());
 
     // Connect to robot
     robot.login_in(robot_ip.c_str());
@@ -629,13 +648,16 @@ int main(int argc, char** argv)
     rclcpp::sleep_for(chrono::milliseconds(500));
 
     // Filter param
-    robot.servo_move_use_joint_LPF(0.5);
+    robot.servo_move_use_joint_LPF(0.5, -1);
 
     // Power on + enable
     robot.power_on();
     rclcpp::sleep_for(chrono::seconds(8));
     robot.enable_robot();
     rclcpp::sleep_for(chrono::seconds(4));
+
+    // Global call for edg_init
+    robot.edg_init(1, edg_init_ip.c_str());
 
     // Publishers
     joint_states_pub = node->create_publisher<sensor_msgs::msg::JointState>("/joint_states", 10);
