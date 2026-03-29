@@ -13,7 +13,7 @@ git clone git@github.com:JAKARobotics/JAKA_K1.git
 cd JAKA_K1
 git checkout EtherCAT_K1_dual-arm
 ```
-Then follow the build instructions in that branch's README.
+Then follow the instructions in that branch's README.
 
 
 ## 🏁 Quick start 
