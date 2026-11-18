@@ -157,20 +157,14 @@ ros2 service call /jaka_k1_driver/get_sdk_version jaka_k1_msgs/srv/GetSdkVersion
 
 ## 🧪 MoveIt Simulation Modes
 
-To support both RViz-only simulation and Isaac Sim integration, we modified the `launches.py` file used by MoveIt2:  
+The shared [`jaka_moveit_launches`](./src/jaka_moveit_launches/jaka_moveit_launches/launches.py) package supports both RViz-only simulation and Isaac Sim integration. Build and source this workspace to use it; there is no need to modify MoveIt's installed `launches.py`.
 
-🛠️ **Modifications**:
+**Supported launch options**:
 
 - Adds **use_rviz_sim** and **use_isaac_sim** arguments.
 - Determines whether fake controllers or Isaac Sim interfaces are spawned, based on the provided argument.
 
-⚙️ **Setup**:
-
-- Replace the original `launches.py` from MoveIt2 with the modified version provided in **jaka_k1_ros2** package.
-- To find where to replace:  
-  ```bash
-  find /opt/ros/humble/ -name launches.py
-  ```
+If you previously replaced MoveIt's `launches.py` manually, restore the original file for your installed MoveIt version; `jaka_moveit_launches` now provides the required custom launch behavior.
 
 ### 🚀 Launch Moveit Simulation Modes  
 
